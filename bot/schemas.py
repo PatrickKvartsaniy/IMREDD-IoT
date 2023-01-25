@@ -31,7 +31,7 @@ class ReplyMessage(BaseModel):
 
 
 class Message(BaseModel):
-    date: int | str
+    date: int
     chat: Optional[Chat]
     message_id: Optional[str]
     from_field: Optional[From]

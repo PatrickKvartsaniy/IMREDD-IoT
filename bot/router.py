@@ -9,16 +9,15 @@ telegram_router = APIRouter(prefix="/telegram", tags=["bots"])
 
 
 @telegram_router.post("/webhook{token}")
-async def telegram_bot_endpoint(
-        request: Request, token: str, db: AsyncSession = Depends(get_async_session)):
+async def telegram_bot_endpoint( request: Request, token: str, db: AsyncSession = Depends(get_async_session)):
     req = await request.json()
 
     try:
         schema = schemas.TelegramRequestBody(**req)
         if not schema.message.text:
             return Response(status_code=200)
-
-        user = await upsert_telegram_user(schema, token, db)
+        print(schema.message.text, schema.message.chat.username)
+        # user = await upsert_telegram_user(schema, token, db)
 
     except Exception as e:
         return Response(status_code=200)

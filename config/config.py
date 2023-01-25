@@ -9,10 +9,10 @@ class ServiceSetting(BaseSettings):
 
     port: int = 8080
     host: str = "0.0.0.0"
-    domain: str = "https://sbots-core.herokuapp.com"
+    domain: str = "https://imredd.onrender.com"
     log_level: str = "INFO"
 
-    db_host: str = "dpg-cf8jgkpmbjss4md9k830-a"
+    db_host: str = "dpg-cf8jgkpmbjss4md9k830-a.frankfurt-postgres.render.com"
     db_port: int = 5432
     db_name: str = "imredd"
     db_user: str = "imredd"
