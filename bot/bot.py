@@ -16,13 +16,13 @@ class BaseBotInterface:
     TELEGRAM_GET_WEBHOOK_INFO = '/getWebhookInfo'
 
     async def set_webhook(self) -> bool:
-        payload = schemas.WebhookPayload(url=f"{config.domain}/bots/telegram/webhook{self.token}")
+        payload = schemas.WebhookPayload(url=f"{config.domain}/telegram/webhook{self.token}")
         url = self.TELEGRAM_BASE_URL + self.token + self.TELEGRAM_SET_WEBHOOK_URL
         req = await http.post_request(url=url, payload=payload.dict())
         return req.status_code == 200
 
     async def delete_webhook(self) -> bool:
-        payload = schemas.WebhookPayload(url=f"{config.domain}/bots/telegram/webhook{self.token}")
+        payload = schemas.WebhookPayload(url=f"{config.domain}/telegram/webhook{self.token}")
         url = self.TELEGRAM_BASE_URL + self.token + self.TELEGRAM_REMOVE_WEBHOOK
         req = await http.post_request(url=url, payload=payload.dict())
         return req.status_code == 200
