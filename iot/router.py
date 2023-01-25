@@ -7,10 +7,9 @@ from db import get_async_session
 iot_router = APIRouter(prefix="/iot", tags=["iot"])
 
 
-@iot_router.post("/")
-async def data_stream(
-        request: Request, token: str, db: AsyncSession = Depends(get_async_session)):
-    # req = await request.json()
+@iot_router.post("")
+async def data_stream(request: Request):
+    req = await request.json()
     #
     # try:
     #     schema = schemas.TelegramRequestBody(**req)
@@ -21,7 +20,7 @@ async def data_stream(
     #
     # except Exception as e:
     #     return Response(status_code=200)
-    pass
+    print(req)
 
 
 # async def upsert_telegram_user(schema: schemas.TelegramRequestBody, token: str, db: AsyncSession) -> models.User:
