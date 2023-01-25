@@ -1,5 +1,7 @@
 from bot import schemas, http
 
+from config import config
+
 
 class BaseBotInterface:
 

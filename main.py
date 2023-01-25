@@ -3,22 +3,26 @@ import asyncio
 import uvicorn
 
 
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI
 
 from config import config
 
+from bot import telegram_router, BaseBotInterface
+from iot import iot_router
+
 app = FastAPI()
-app.include_router(router)
+app.include_router(telegram_router)
+app.include_router(iot_router)
 
 
 @app.on_event('startup')
 async def startup_event():
-    pass
+    await BaseBotInterface(config.telegram_token).set_webhook()
 
 
 @app.on_event('shutdown')
 async def shutdown_event():
-    pass
+    await BaseBotInterface(config.telegram_token).delete_webhook()
 
 
 async def main():
