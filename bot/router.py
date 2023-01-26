@@ -11,7 +11,7 @@ telegram_router = APIRouter(prefix="/telegram", tags=["bots"])
 @telegram_router.post("/webhook{token}")
 async def telegram_bot_endpoint(request: Request, token: str, db: AsyncSession = Depends(get_async_session)):
     req = await request.json()
-    print(req)
+    print(request)
     try:
         schema = schemas.TelegramRequestBody(**req)
         if not schema.message.text:
