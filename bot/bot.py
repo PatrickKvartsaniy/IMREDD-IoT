@@ -5,8 +5,8 @@ from config import config
 
 class BaseBotInterface:
 
-    def __init__(self, token):
-        self.token = token
+    def __init__(self):
+        self.token = config.telegram_token
 
     TELEGRAM_BASE_URL = "https://api.telegram.org/bot"
     TELEGRAM_SET_WEBHOOK_URL = "/setWebhook"
@@ -16,15 +16,17 @@ class BaseBotInterface:
     TELEGRAM_GET_WEBHOOK_INFO = '/getWebhookInfo'
 
     async def set_webhook(self) -> bool:
-        payload = schemas.WebhookPayload(url=f"{config.domain}/telegram/webhook{self.token}")
+        payload = schemas.WebhookPayload(url=f"{config.domain}/telegram/webhook")
         url = self.TELEGRAM_BASE_URL + self.token + self.TELEGRAM_SET_WEBHOOK_URL
         req = await http.post_request(url=url, payload=payload.dict())
+        print("webhook has been set to " + payload.url)
         return req.status_code == 200
 
     async def delete_webhook(self) -> bool:
-        payload = schemas.WebhookPayload(url=f"{config.domain}/telegram/webhook{self.token}")
+        payload = schemas.WebhookPayload(url=f"{config.domain}/telegram/webhook")
         url = self.TELEGRAM_BASE_URL + self.token + self.TELEGRAM_REMOVE_WEBHOOK
         req = await http.post_request(url=url, payload=payload.dict())
+        print("webhook has been removed")
         return req.status_code == 200
 
     async def get_info(self, chat_id: str, user_id: str) -> schemas.TelegramMember:

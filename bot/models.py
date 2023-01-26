@@ -1,7 +1,7 @@
 import uuid
 import datetime
 
-from sqlalchemy import Column, String, DateTime
+from sqlalchemy import Column, String, DateTime, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 
 from db import Base
@@ -24,6 +24,7 @@ class User(Base):
     username = Column(String)
     first_name = Column(String)
     last_name = Column(String)
+    subscribed = Column(Boolean, default=False)
 
     def get_id(self) -> str:
         return str(self.id)

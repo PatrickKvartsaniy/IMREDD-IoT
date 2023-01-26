@@ -2,6 +2,9 @@ from fastapi import APIRouter, Depends, Request, Response
 
 from iot.schemas import SecurityData
 
+from bot.crud import get_all_subscribed
+from bot.bot import BaseBotInterface
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db import get_async_session
@@ -26,7 +29,7 @@ async def data_stream(request: Request):
 
 
 @iot_router.post("/security")
-async def security(request: SecurityData):
+async def security(request: SecurityData, db: AsyncSession = Depends(get_async_session)):
     #
     # try:
     #     schema = schemas.TelegramRequestBody(**req)
@@ -38,7 +41,11 @@ async def security(request: SecurityData):
     # except Exception as e:
     #     return Response(status_code=200)
     if request.value > 900:
-        print("ALARM!")
+        users = await get_all_subscribed(db)
+        bot = BaseBotInterface()
+        for user in users:
+            await bot.send_message(user.telegram_id, "Alarm!")
+
 
 # async def upsert_telegram_user(schema: schemas.TelegramRequestBody, token: str, db: AsyncSession) -> models.User:
 #     telegram_member = await bot.BaseBotInterface(token).get_info(schema.message.chat.id, schema.message.from_field.id)

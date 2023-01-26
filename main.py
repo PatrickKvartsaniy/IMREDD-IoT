@@ -17,12 +17,12 @@ app.include_router(iot_router)
 
 @app.on_event('startup')
 async def startup_event():
-    await BaseBotInterface(config.telegram_token).set_webhook()
+    await BaseBotInterface().set_webhook()
 
 
 @app.on_event('shutdown')
 async def shutdown_event():
-    await BaseBotInterface(config.telegram_token).delete_webhook()
+    await BaseBotInterface().delete_webhook()
 
 
 async def main():

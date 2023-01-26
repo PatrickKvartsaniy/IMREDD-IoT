@@ -8,23 +8,31 @@ from db import get_async_session
 telegram_router = APIRouter(prefix="/telegram", tags=["bots"])
 
 
-@telegram_router.post("/webhook{token}")
-async def telegram_bot_endpoint(request: Request, token: str, db: AsyncSession = Depends(get_async_session)):
+@telegram_router.post("/webhook")
+async def telegram_bot_endpoint(request: Request, db: AsyncSession = Depends(get_async_session)):
     req = await request.json()
-    print(request)
     try:
         schema = schemas.TelegramRequestBody(**req)
         if not schema.message.text:
             return Response(status_code=200)
         print(schema.message.text, schema.message.chat.username)
-        # user = await upsert_telegram_user(schema, token, db)
-
+        user = await upsert_telegram_user(schema, db)
+        if schema.message.text == "/subscribe" and not user.subscribed:
+            if not crud.update_subscription(user.telegram_id, True, db):
+                print("subscribing failed")
+                return
+        if schema.message.text == "/unsubscribe" and user.subscribed:
+            if not crud.update_subscription(user.telegram_id, False, db):
+                print("unsubscribing failed")
+                return
+        if schema.message.text == "/coffee":
+            pass
     except Exception as e:
         return Response(status_code=200)
 
 
-async def upsert_telegram_user(schema: schemas.TelegramRequestBody, token: str, db: AsyncSession) -> models.User:
-    telegram_member = await bot.BaseBotInterface(token).get_info(schema.message.chat.id, schema.message.from_field.id)
+async def upsert_telegram_user(schema: schemas.TelegramRequestBody, db: AsyncSession) -> models.User:
+    telegram_member = await bot.BaseBotInterface().get_info(schema.message.chat.id, schema.message.from_field.id)
     customer = await crud.read(telegram_member.user.id, db)
 
     if customer:
