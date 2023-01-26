@@ -37,7 +37,8 @@ async def security(request: SecurityData):
     #
     # except Exception as e:
     #     return Response(status_code=200)
-    print(request)
+    if request.value > 900:
+        print("ALARM!")
 
 # async def upsert_telegram_user(schema: schemas.TelegramRequestBody, token: str, db: AsyncSession) -> models.User:
 #     telegram_member = await bot.BaseBotInterface(token).get_info(schema.message.chat.id, schema.message.from_field.id)
