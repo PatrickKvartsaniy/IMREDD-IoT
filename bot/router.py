@@ -1,8 +1,13 @@
+import datetime
+import time
+
 from fastapi import APIRouter, Depends, Request, Response
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from bot import models, schemas, crud, bot
+from iot.crud import get_latest_measurement
+
 from db import get_async_session
 
 telegram_router = APIRouter(prefix="/telegram", tags=["bots"])
@@ -27,7 +32,21 @@ async def telegram_bot_endpoint(request: Request, db: AsyncSession = Depends(get
             print("unsubscribing failed")
             return
     if schema.message.text == "/coffee":
-        pass
+        b = bot.BaseBotInterface()
+        m = await get_latest_measurement(db)
+        print(m)
+        if time.time() - m.timestamp > 600:
+            await b.send_message(user.telegram_id, "I'm sorry, my data is outdated.")
+            return
+        if m.temperature < 22.56:
+            await b.send_message(user.telegram_id, "It might be a perfect time for a cup of espresso.")
+            return
+        if 22.56 < m.temperature < 23.9:
+            await b.send_message(user.telegram_id, "It might be a crowd, but worth to check.")
+            return
+        if m.temperature > 23.9:
+            await b.send_message(user.telegram_id, "Place is crowded, better drink some water.")
+            return
 
 
 async def upsert_telegram_user(schema: schemas.TelegramRequestBody, db: AsyncSession) -> models.User:

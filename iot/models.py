@@ -1,12 +1,9 @@
 import uuid
-import datetime
 
-from sqlalchemy import Column, String, Float, BigInteger
+from sqlalchemy import Column, Float, BigInteger
 from sqlalchemy.dialects.postgresql import UUID
 
 from db import Base
-
-from bot import schemas
 
 
 class Measurement(Base):
