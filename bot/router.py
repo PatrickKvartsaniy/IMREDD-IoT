@@ -23,7 +23,7 @@ async def telegram_bot_endpoint(request: Request, db: AsyncSession = Depends(get
             print("subscribing failed")
             return
     if schema.message.text == "/unsubscribe" and user.subscribed:
-        ok = crud.update_subscription(user.telegram_id, False, db)
+        ok = await crud.update_subscription(user.telegram_id, False, db)
         if not ok:
             print("unsubscribing failed")
             return
