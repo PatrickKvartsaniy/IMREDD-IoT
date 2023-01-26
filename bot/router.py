@@ -17,6 +17,7 @@ async def telegram_bot_endpoint(request: Request, db: AsyncSession = Depends(get
             return Response(status_code=200)
         print(schema.message.text, schema.message.chat.username)
         user = await upsert_telegram_user(schema, db)
+        print("user was created or already exists " + user.username)
         if schema.message.text == "/subscribe" and not user.subscribed:
             if not crud.update_subscription(user.telegram_id, True, db):
                 print("subscribing failed")
@@ -33,6 +34,7 @@ async def telegram_bot_endpoint(request: Request, db: AsyncSession = Depends(get
 
 async def upsert_telegram_user(schema: schemas.TelegramRequestBody, db: AsyncSession) -> models.User:
     telegram_member = await bot.BaseBotInterface().get_info(schema.message.chat.id, schema.message.from_field.id)
+    print(telegram_member.user.username, telegram_member.user.id)
     customer = await crud.read(telegram_member.user.id, db)
 
     if customer:

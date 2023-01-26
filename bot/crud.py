@@ -7,11 +7,11 @@ from bot import models, schemas
 
 
 async def create(request: schemas.User, db: AsyncSession) -> models.User:
-    customer = models.User(request)
-    db.add(customer)
+    user = models.User(request)
+    db.add(user)
     await db.commit()
-    await db.refresh(customer)
-    return customer
+    await db.refresh(user)
+    return user
 
 
 async def read(platform_id: str, db: AsyncSession) -> models.User:
