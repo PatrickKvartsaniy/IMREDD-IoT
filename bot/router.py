@@ -18,11 +18,13 @@ async def telegram_bot_endpoint(request: Request, db: AsyncSession = Depends(get
     user = await upsert_telegram_user(schema, db)
     print("user was created or already exists " + user.username)
     if schema.message.text == "/subscribe" and not user.subscribed:
-        if not crud.update_subscription(user.telegram_id, True, db):
+        ok = await crud.update_subscription(user.telegram_id, True, db)
+        if not ok:
             print("subscribing failed")
             return
     if schema.message.text == "/unsubscribe" and user.subscribed:
-        if not crud.update_subscription(user.telegram_id, False, db):
+        ok = crud.update_subscription(user.telegram_id, False, db)
+        if not ok:
             print("unsubscribing failed")
             return
     if schema.message.text == "/coffee":
