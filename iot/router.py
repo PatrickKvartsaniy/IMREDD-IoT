@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, Request, Response
 
+from iot.schemas import SecurityData
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from db import get_async_session
@@ -24,8 +26,7 @@ async def data_stream(request: Request):
 
 
 @iot_router.post("/security")
-async def security(request: Request):
-    req = await request.json()
+async def security(request: SecurityData):
     #
     # try:
     #     schema = schemas.TelegramRequestBody(**req)

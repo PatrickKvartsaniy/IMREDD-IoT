@@ -121,3 +121,7 @@ class Model(BaseModel):
     context: Optional[Context] = None
     visibility: Optional[Visibility] = None
     unique_id: Optional[str] = None
+
+
+class SecurityData(BaseModel):
+    value: int
