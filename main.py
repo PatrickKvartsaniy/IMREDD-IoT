@@ -22,8 +22,8 @@ async def startup_event():
 
 @app.on_event('shutdown')
 async def shutdown_event():
-    await BaseBotInterface().delete_webhook()
-
+    # await BaseBotInterface().delete_webhook()
+    pass
 
 async def main():
     cfg = uvicorn.Config(
