@@ -11,25 +11,22 @@ telegram_router = APIRouter(prefix="/telegram", tags=["bots"])
 @telegram_router.post("/webhook")
 async def telegram_bot_endpoint(request: Request, db: AsyncSession = Depends(get_async_session)):
     req = await request.json()
-    try:
-        schema = schemas.TelegramRequestBody(**req)
-        if not schema.message.text:
-            return Response(status_code=200)
-        print(schema.message.text, schema.message.chat.username)
-        user = await upsert_telegram_user(schema, db)
-        print("user was created or already exists " + user.username)
-        if schema.message.text == "/subscribe" and not user.subscribed:
-            if not crud.update_subscription(user.telegram_id, True, db):
-                print("subscribing failed")
-                return
-        if schema.message.text == "/unsubscribe" and user.subscribed:
-            if not crud.update_subscription(user.telegram_id, False, db):
-                print("unsubscribing failed")
-                return
-        if schema.message.text == "/coffee":
-            pass
-    except Exception as e:
+    schema = schemas.TelegramRequestBody(**req)
+    if not schema.message.text:
         return Response(status_code=200)
+    print(schema.message.text, schema.message.chat.username)
+    user = await upsert_telegram_user(schema, db)
+    print("user was created or already exists " + user.username)
+    if schema.message.text == "/subscribe" and not user.subscribed:
+        if not crud.update_subscription(user.telegram_id, True, db):
+            print("subscribing failed")
+            return
+    if schema.message.text == "/unsubscribe" and user.subscribed:
+        if not crud.update_subscription(user.telegram_id, False, db):
+            print("unsubscribing failed")
+            return
+    if schema.message.text == "/coffee":
+        pass
 
 
 async def upsert_telegram_user(schema: schemas.TelegramRequestBody, db: AsyncSession) -> models.User:
