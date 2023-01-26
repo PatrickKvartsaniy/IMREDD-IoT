@@ -16,7 +16,11 @@ async def telegram_bot_endpoint(request: Request, db: AsyncSession = Depends(get
         return Response(status_code=200)
     print(schema.message.text, schema.message.chat.username)
     user = await upsert_telegram_user(schema, db)
-    print("user was created or already exists " + user.username)
+    if user:
+        print("user was created or already exists " + user.username)
+    else:
+        print("user creation failed")
+        return
     if schema.message.text == "/subscribe" and not user.subscribed:
         ok = await crud.update_subscription(user.telegram_id, True, db)
         if not ok:
