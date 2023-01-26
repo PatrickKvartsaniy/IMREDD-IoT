@@ -34,11 +34,11 @@ async def telegram_bot_endpoint(request: Request, db: AsyncSession = Depends(get
 
 async def upsert_telegram_user(schema: schemas.TelegramRequestBody, db: AsyncSession) -> models.User:
     telegram_member = await bot.BaseBotInterface().get_info(schema.message.chat.id, schema.message.from_field.id)
-    print(telegram_member.user.username, telegram_member.user.id)
-    customer = await crud.read(telegram_member.user.id, db)
+    user = await crud.read(telegram_member.user.id, db)
 
-    if customer:
-        return customer
+    if user:
+        print("user exists")
+        return user
 
     user_data = schemas.User(
         id=schema.message.from_field.id,

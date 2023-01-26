@@ -11,6 +11,7 @@ async def create(request: schemas.User, db: AsyncSession) -> models.User:
     db.add(user)
     await db.commit()
     await db.refresh(user)
+    print("user was created")
     return user
 
 

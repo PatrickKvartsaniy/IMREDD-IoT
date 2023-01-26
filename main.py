@@ -25,6 +25,7 @@ async def shutdown_event():
     # await BaseBotInterface().delete_webhook()
     pass
 
+
 async def main():
     cfg = uvicorn.Config(
         "main:app",
